@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask import jsonify
 from pymongo import MongoClient
 
@@ -6,7 +7,7 @@ from loguru import logger
 
 
 app = Flask(__name__)
-
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.route("/")
 def index():
