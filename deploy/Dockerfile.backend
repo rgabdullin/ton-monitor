@@ -1,5 +1,19 @@
 FROM ubuntu:20.04
 
+# setup locale and timezone
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8 
+
+# install ton
+RUN apt-get --yes install cmake make git wget
+
+RUN wget https://raw.githubusercontent.com/igroman787/mytonctrl/master/scripts/install.sh
+RUN /bin/bash install.sh -m full
+
 # install python
 ENV DEBIANFRONTEND=noninteractive
 RUN apt-get --yes update
@@ -15,4 +29,6 @@ ADD . /usr/src/app
 
 WORKDIR /usr/src/app
 EXPOSE 8080
+
+ENV PYTHONPATH=/usr/scr/mytonctrl:$PYTHONPATH
 ENTRYPOINT ["python3", "./run_web_server.py"]
