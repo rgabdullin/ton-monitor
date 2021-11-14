@@ -10,17 +10,17 @@ services:
     image: rabbitmq
     ports:
         - 5672:5672
-  backend:
-    build: 
-        context: .
-        dockerfile: deploy/Dockerfile.backend
-    environment: 
-        MONGO_HOST: mongodb
-        RABBITMQ_HOST: rabbitmq
-    depends_on: 
-        - mongodb
-        - rabbitmq
-    ports:
-        - 8080:8080
+#   backend:
+#     build: 
+#         context: .
+#         dockerfile: deploy/Dockerfile.backend
+#     environment: 
+#         MONGO_HOST: mongodb
+#         RABBITMQ_HOST: rabbitmq
+#     depends_on: 
+#         - mongodb
+#         - rabbitmq
+#     ports:
+#         - 8080:8080
 volumes:
     db-data:
