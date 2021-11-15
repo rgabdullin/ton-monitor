@@ -1,0 +1,26 @@
+.infoBlock {
+  margin-bottom: 30px;
+  border: 1px solid rgba(14, 116, 192, 0.2);
+  border-radius: 20px;
+  color: #0c558b;
+  .infoBlockItem {
+    margin: auto;
+    text-align: center;
+    padding: 5px 10px;
+    &:not(:last-child) {
+      border-right: 1px solid rgba(14, 116, 192, 0.2);
+    }
+  }
+}
+
+.validatorsBlock {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  &Item {
+    width: calc(50% - 1px);
+    &:not(:last-child) {
+      border-right: 2px solid rgba(14, 116, 192, 0.2);
+    }
+  }
+}
