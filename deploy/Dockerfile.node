@@ -1,0 +1,33 @@
+FROM ubuntu:20.04
+
+# setup locale and timezone
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8
+
+# install ton
+RUN apt-get --yes install cmake make git wget
+
+# install python
+RUN apt-get --yes update
+RUN apt-get --yes install python3-dev python3-pip python3-wheel
+
+# install systemctl
+RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py
+RUN cp systemctl3.py /usr/bin/systemctl
+RUN chmod +x /usr/bin/systemctl
+RUN systemctl status
+RUN wget https://raw.githubusercontent.com/igroman787/mytonctrl/master/scripts/install.sh
+RUN /bin/bash install.sh -m full
+
+# install python libraries
+RUN pip3 install -U pip wheel
+ADD requirements.txt /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt
+
+# entrypoint
+ADD . /usr/src/app
+WORKDIR /usr/src/app
