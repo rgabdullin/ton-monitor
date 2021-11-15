@@ -12,9 +12,16 @@
 1. Run `sudo docker-compose up -d --build --force-recreate`.
 
 
+## Docker with MyTonCtrl
+1. Run `sudo docker build -t ton-node . -f deploy/Dockerfile.node`.
+2. Create new volume for ton-node db: `sudo docker volume create ton-node-db`.
+3. Run container: `sudo docker run -d --name ton-node --mount source=ton-node-db,target=/var/ton-work/db --network host -it ton-node`.
+4. Run debug: `sudo docker run --rm --name ton-node --mount source=ton-node-db,target=/var/ton-work/db --network host -it ton-node`.
+
 ## (WIP) Docker with MyTonCtrl
 1. sudo docker build . -f deploy/Dockerfile.backend
 2. sudo docker run -d --name ton-mon --network host -it <IMAGE_ID>
+
 3. в mytonctrl.py закомментить строки с 322 по 332 (иначе ошибка list has no items())
 в mypylib.py в строке 780:
 return "eth0"
