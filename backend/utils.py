@@ -2,6 +2,7 @@ import socket
 import struct
 
 from datetime import datetime
+from loguru import logger
 
 
 # time
@@ -12,7 +13,7 @@ def get_last_update(ts):
 
 def check_relevance(ts, threshold=60):
     td = get_last_update(ts)
-    is_relevant = td > threshold
+    is_relevant = td <= threshold
     if not is_relevant:
         logger.warning(f"Data not relevant. Last update was {td} seconds ago")
     return is_relevant
