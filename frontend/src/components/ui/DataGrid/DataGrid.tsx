@@ -7,6 +7,7 @@ import {
   TableHead,
   TableBody,
   Grid,
+  Typography,
 } from "@mui/material";
 import { TDataGrid } from "../../types";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -14,7 +15,8 @@ import DoNotDisturbOnIcon from "@mui/icons-material/DoNotDisturbOn";
 import styles from "./DataGrid.module.scss";
 
 const DataGrid: React.FC<TDataGrid> = ({ data, columns }) => {
-  const getRenderValue = (value: string | boolean | number, type?: string) => {
+  const getRenderValue = (value: string | boolean | number, types: number) => {
+    const type = columns[types] ? columns[types].type : "string";
     switch (type) {
       case "string":
         return value;
@@ -43,7 +45,11 @@ const DataGrid: React.FC<TDataGrid> = ({ data, columns }) => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => {
-                  return <TableCell key={column.key}>{column.name}</TableCell>;
+                  return (
+                    <TableCell key={column.key}>
+                      <Typography variant="body1">{column.name}</Typography>
+                    </TableCell>
+                  );
                 })}
               </TableRow>
             </TableHead>
@@ -52,12 +58,14 @@ const DataGrid: React.FC<TDataGrid> = ({ data, columns }) => {
                 return (
                   <TableRow key={index}>
                     <TableCell key={index} width="30px">
-                      {index}
+                      <Typography variant="body2">{index}</Typography>
                     </TableCell>
-                    {Object.entries(dataItem).map((entry, index) => {
+                    {Object.entries(dataItem).map((entry, newIndex) => {
                       return (
                         <TableCell key={entry[0]}>
-                          {getRenderValue(entry[1], columns[index + 1].type)}
+                          <Typography variant="body2">
+                            {getRenderValue(entry[1], newIndex + 1)}
+                          </Typography>
                         </TableCell>
                       );
                     })}
@@ -68,32 +76,6 @@ const DataGrid: React.FC<TDataGrid> = ({ data, columns }) => {
           </Table>
         </TableContainer>
       </Grid>
-      {/* <Grid item xs={6}>
-        <TableContainer className={styles.table}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => {
-                  return <TableCell key={column.key}>{column.name}</TableCell>;
-                })}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((dataItem, index) => {
-                return (
-                  <TableRow key={index}>
-                    {Object.entries(dataItem).map((entry) => {
-                      return (
-                        <TableCell key={entry[0]}>{String(entry[1])}</TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid> */}
     </Grid>
   );
 };

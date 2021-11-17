@@ -18,4 +18,10 @@ export const texts = {
     "uptime.uptime": "uptime",
     "uptime.response_time": "response time",
     "tonbridges.title": "TON bridges",
+    "tonbridges.available": "Available",
+    "tonbridges.not_available": "Not available",
+    "lastblock.title": "Last block",
+    "lastblock.masterchain": "Masterchain",
+    "lastblock.basechain": "Basechain",
+    "transactionstats.title": "Transaction types (24 hours)",
 } as { [key: string]: string };

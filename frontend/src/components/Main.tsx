@@ -7,6 +7,7 @@ import api, {
   getBlockRate,
   getValidatorCounts,
   getLastBlock,
+  getTransactionStats,
 } from "../api/Api";
 import {
   BlockRateType,
@@ -15,6 +16,7 @@ import {
   TonBridgesItem,
   TonBridgesProps,
   TPSType,
+  TransactionStatsType,
   ValidatorCountsType,
 } from "./types";
 import { getText } from "./helpers";
@@ -24,6 +26,8 @@ import InfoBlock from "./InfoBlock/InfoBlock";
 import InfoBlockItem from "./InfoBlock/InfoBlockItem";
 import Governance from "./Governance";
 import TonBridges from "./TonBridges";
+import LastBlock from "./LastBlock";
+import TransactionStats from "./TransactionTypes";
 const Main: React.FC = () => {
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [tps, setTps] = React.useState<TPSType>({} as TPSType);
@@ -36,6 +40,9 @@ const Main: React.FC = () => {
     {} as GovernanceProps
   );
   const [tonBridges, setTonBridges] = React.useState<TonBridgesItem[]>([]);
+  const [transactionStats, setTransactionStats] = React.useState<
+    TransactionStatsType[]
+  >([]);
   const [lastBlock, setLastBlock] = React.useState<LastBlockType>(
     {} as LastBlockType
   );
@@ -62,6 +69,10 @@ const Main: React.FC = () => {
       .then(() => console.log("%cgetTonBridgeStats called ", "color: #008000"));
     getLastBlock()
       .then((data) => setLastBlock(data))
+      .then(() => setIsLoaded(true))
+      .then(() => console.log("%cgetLastBlock called ", "color: #008000"));
+    getTransactionStats()
+      .then((data) => setTransactionStats(data))
       .then(() => setIsLoaded(true))
       .then(() => console.log("%cgetLastBlock called ", "color: #008000"));
   };
@@ -93,27 +104,52 @@ const Main: React.FC = () => {
             />
           )}
           <Uptimes />
-          <Grid container columnSpacing="50px">
-            <Grid item xs={12} md={6}>
-              {Object.keys(governance).length > 0 && (
+          <Grid container columnSpacing="50px" rowSpacing="15px">
+            {Object.keys(governance).length > 0 && (
+              <Grid item xs={12} md={6}>
                 <InfoBlockItem
                   xs={12}
                   labelKey="governance"
                   renderComponent={<Governance {...governance} />}
                   customClass="governance"
                 />
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              {Object.keys(tonBridges).length > 0 && (
+              </Grid>
+            )}
+
+            {Object.keys(tonBridges).length > 0 && (
+              <Grid item xs={12} md={6}>
                 <InfoBlockItem
                   xs={12}
                   labelKey="tonBridges"
                   renderComponent={<TonBridges model={tonBridges} />}
                   customClass="tonBridges"
                 />
-              )}
-            </Grid>
+              </Grid>
+            )}
+
+            {Object.keys(lastBlock).length > 0 && (
+              <Grid item xs={12} md={6}>
+                <InfoBlockItem
+                  xs={12}
+                  labelKey="lastBlock"
+                  renderComponent={<LastBlock {...lastBlock} />}
+                  customClass="lastBlock"
+                />
+              </Grid>
+            )}
+
+            {Object.keys(transactionStats).length > 0 && (
+              <Grid item xs={12} md={6}>
+                <InfoBlockItem
+                  xs={12}
+                  labelKey="transactionStats"
+                  renderComponent={
+                    <TransactionStats model={transactionStats} />
+                  }
+                  customClass="transactionStats"
+                />
+              </Grid>
+            )}
           </Grid>
         </>
       )}
