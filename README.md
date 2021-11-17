@@ -17,5 +17,3 @@ Service contains of ??? parts:
 
 ## Running MongoDB and RabbitMQ
 1. Run `sudo docker-compose up -d --build --force-recreate`.
-
-

@@ -11,10 +11,4 @@ if __name__ == '__main__':
     argparser.add_argument('--port', type=int, default=8080, help='Port to listen (default: 8080)')
     args = argparser.parse_args()
 
-    if args.demo:
-        from web import app_demo
-        
-        logger.warning("Running demo server")
-        app_demo.run(host=args.ip, port=args.port)
-    else:
-        app.run(host=args.ip, port=args.port)
+    app.run(host=args.ip, port=args.port)

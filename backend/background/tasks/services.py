@@ -26,6 +26,9 @@ def update_ton_apis_stats(self):
         for service in TON_APIS:
             name = service['name']
             url = service['url']
+
+            available = False
+            resp_time = None
             try:
                 # knock url
                 resp = R.get(url, timeout=2)
@@ -37,9 +40,7 @@ def update_ton_apis_stats(self):
                     resp_time = [R.get(url, timeout=2).elapsed.total_seconds() * 1000 for _ in range(runs)]
                     resp_time = [x for x in resp_time if x is not None]
                     resp_time = sum(resp_time) / len(resp_time)
-            except:
-                available = False
-                resp_time = None
+            except: pass
             # results
             timestamp = datetime.now()
             loc = {
@@ -87,7 +88,7 @@ def update_ton_bridges_stats(self):
                         if len(row) > 0:
                             smart_contract_state = int(row[0])
             # results
-            if available:
+            if web_page_avaliable:
                 runs = 5
                 resp_time = [R.get(url, timeout=2).elapsed.total_seconds() * 1000 for _ in range(runs)]
                 resp_time = [x for x in resp_time if x is not None]

@@ -1,8 +1,11 @@
-from datetime import datetime
+import pandas as pd
+
+from datetime import datetime, timedelta
 
 from flask import Flask
 from flask_cors import CORS
 from flask import jsonify
+from bson import ObjectId
 
 from backend.utils import check_relevance
 from backend.data.mongodb import get_database, mongo_read_last
@@ -17,61 +20,182 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 database = get_database(MONGO_DATABASE)
 
 
-# endpoints
-@app.route("/api/getTonApis")
-def get_ton_apis():
-    collection = database.ton_apis
-    result = mongo_read_last(collection)
-
-    check_relevance(result['timestamp'])
-    return jsonify(result['data'])
-
-
-@app.route("/api/getTonBridges")
-def get_ton_bridges():
-    collection = database.ton_bridges
-    result = mongo_read_last(collection)
-
-    check_relevance(result['timestamp'])
-    return jsonify(result['data'])
-
-
-@app.route("/api/getLiteServers")
-def get_liteservers():
-    collection = database.liteservers
-    result = mongo_read_last(collection)
-
-    check_relevance(result['timestamp'])
-    return jsonify(result['data'])
-
-
 @app.route("/api/getGovernance")
 def get_governance():
-    collection = database.governance
-    result = mongo_read_last(collection)
-
-    check_relevance(result['timestamp'])
-
-    # result['offers'].pop('offers_list')
-    # result['complaints'].pop('complaints_list')
+    result = database.governance.find_one({})
     result.pop('_id')
     return jsonify(result)
 
 
-@app.route("/api/getNetworkStats")
-def get_network_stats():
-    collection = database.network_stats
-    result = mongo_read_last(collection)
+@app.route("/api/getLiteServers")
+def get_liteservers():
+    result = list(database.liteservers.find({}))
+    for r in result:
+        r.pop('_id')
+    return jsonify(result)
 
-    check_relevance(result['timestamp'])
+
+@app.route("/api/getValidators")
+def get_validators():
+    result = list(database.validators.find({}))
+    for r in result:
+        r.pop('_id')
+    return jsonify(result)
+
+
+@app.route("/api/getLocalValidatorStatus")
+def get_local_validator_status():
+    result = database.validator_status.find_one({})
     result.pop('_id')
+    return jsonify(result)
+
+
+@app.route("/api/getTonBridgeStats")
+def get_ton_bridge_stats(hours=24):
+    start = datetime.now() - timedelta(hours=hours)
+    
+    df = list(database.ton_bridges.find({"timestamp": {'$gt': start}}))
+    df = pd.DataFrame(df)
+    df.drop(columns='_id', inplace=True)
+    df.timestamp = df.timestamp.dt.floor('300s')
+
+    df['smart_contract_state'] = (df.smart_contract_state == 0)
+    df.fillna(0.0, inplace=True)
+    df = df.groupby(['name', 'url', 'timestamp']).mean().reset_index()
+
+    results = []
+    for name in df.name.unique():
+        loc = df[df.name == name]
+        url = loc['url'].iloc[0]
+        loc = loc.drop(columns=['name', 'url'])
+        ts = {key: list(loc[key]) for key in loc.columns}
+        res = dict(name=name, url=url, **ts)
+        results.append(res)
+    return jsonify(results)
+
+
+@app.route("/api/getTonApisStats")
+def get_ton_apis_stats(hours=24):
+    start = datetime.now() - timedelta(hours=hours)
+    
+    df = list(database.ton_apis.find({"timestamp": {'$gt': start}}))
+    df = pd.DataFrame(df)
+    df.drop(columns='_id', inplace=True)
+    df.timestamp = df.timestamp.dt.floor('300s')
+
+    df.fillna(0.0, inplace=True)
+    df = df.groupby(['service_name', 'timestamp']).mean().reset_index()
+
+    results = []
+    for service_name in df.service_name.unique():
+        loc = df[df.service_name == service_name]
+        loc = loc.drop(columns=['service_name'])
+        ts = {key: list(loc[key]) for key in loc.columns}
+        res = dict(service_name=service_name, **ts)
+        results.append(res)
+    return jsonify(results)
+
+
+@app.route("/api/getBlockRate")
+def get_block_rate(minutes=2):
+    start = datetime.utcnow() - timedelta(minutes=minutes)
+    start = ObjectId.from_datetime(start)
+    
+    sync = database.validator_status.find_one({})
+    sync = (sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()) if sync is not None else 1e9
+    
+    # compute metrics
+    blocks = list(database.blocks.find({"_id": {"$gt": start}}))
+    blocks = pd.DataFrame(blocks).drop(columns='_id')
+    blocks['block_number'] = blocks['block_number'].astype(int)
+    
+    gb = blocks.groupby(['workchain_id'])
+    block_num = gb.block_number.max() - gb.block_number.min()
+    block_num = block_num.to_frame('blocks_per_second')
+    
+    block_num['seconds_per_block'] = (minutes * 60) / (block_num.blocks_per_second + 1e-8)
+    block_num['blocks_per_second'] = block_num.blocks_per_second / (minutes * 60)
+    
+    # check sync
+    if sync > 60:
+        logger.warning('Out of Sync')
+        block_num.loc[:] = -1
+
+    result = block_num.reset_index().to_dict(orient='records')
+    return jsonify(result)
+
+
+@app.route("/api/getTps")
+def get_tps(minutes=2):
+    start = datetime.utcnow() - timedelta(minutes=minutes)
+    start = ObjectId.from_datetime(start)
+    
+    sync = database.validator_status.find_one({})
+    sync = (sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()) if sync is not None else 1e9
+    
+    # compute metrics
+    transactions_count = database.transactions.count_documents({"_id": {"$gt": start}})
+    tps = transactions_count / (minutes * 60)
+    if sync > 60:
+        tps = -1
+    return jsonify({'transactions_per_second': tps})
+
+
+@app.route("/api/getLastBlock")
+def get_last_block(minutes=2):
+    start = datetime.utcnow() - timedelta(minutes=minutes)
+    start = ObjectId.from_datetime(start)
+    
+    sync = database.validator_status.find_one({})
+    sync = (sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()) if sync is not None else 1e9
+    
+    # compute metrics
+    last_blocks = {}
+    for workchain_id in ["-1", "0"]:
+        res = database.blocks.find({"workchain_id": {"$eq": workchain_id}})
+        res = res.sort("timestamp", -1).limit(1)
+        res = list(res)
+        if len(res) > 0 and sync <= 60:
+            res = res[0]['block_number']
+        else:
+            res = "-1"
+        last_blocks[workchain_id] = res
+    return jsonify(last_blocks)
+
+
+@app.route("/api/getTransactionStats")
+def get_transaction_stats(hours=24):
+    start = datetime.utcnow() - timedelta(hours=hours)
+    start = ObjectId.from_datetime(start)
+
+    sync = database.validator_status.find_one({})
+    sync = (sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()) if sync is not None else 1e9
+    
+    # transactions
+    t_list = list(database.transaction_details.find({"_id": {"$gt": start}}))
+    df = pd.DataFrame(t_list)
+    df['total'] = 1
+    df['value'] = df['value'].fillna(0.0).astype(float)
+    df['gas_used'] = df['gas_used'].fillna(0).astype(float)
+    
+    # stats
+    gb = df.groupby('transaction_type')
+    res = gb[['value', 'gas_used', 'total']].sum()
+    if sync > 60:
+        res.loc[:] = -1
+    result = res.reset_index().to_dict(orient='records')
     return jsonify(result)
 
 
 @app.route("/")
 def index():
-    return jsonify(['/api/getTonApis',
-                    '/api/getTonBridges',
+    return jsonify(['/api/getGovernance',
                     '/api/getLiteServers',
-                    '/api/getGovernance',
-                    '/api/getNetworkStats'])
+                    '/api/getValidators',
+                    '/api/getLocalValidatorStatus',
+                    '/api/getTonApisStats',
+                    '/api/getTonBridgeStats',
+                    '/api/getBlockRate',
+                    '/api/getTps',
+                    '/api/getLastBlock',
+                    '/api/getTransactionStats',])
