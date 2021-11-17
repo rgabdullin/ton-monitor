@@ -1,18 +1,20 @@
-version: '3.9'
-environment:
-
+version: '3.7'
 services:
   # database
   mongodb:
     image: mongo:4.0.12
     volumes:
         - db-data:/data/db
+    networks: 
+        - backend
     ports:
         - 27017:27017
     restart: always
   # message queue
   rabbitmq:
     image: rabbitmq
+    networks: 
+        - backend
     ports:
         - 5672:5672
     restart: always
@@ -31,17 +33,18 @@ services:
         RABBITMQ_PASSWORD: guest
     depends_on: 
         - mongodb
-        - rabbitmq
-        - ton-service
+    networks: 
+        - backend
     ports:
         - 8080:8080
+    restart: always
   # ton + celery
-  ton-service:
+  ton-node:
     build:
         context: .
         dockerfile: deploy/Dockerfile.node
     volumes:
-        - ton-node-db:/data/db
+        - ton-node-db:/var/ton-work/db
     environment: 
         MONGO_HOST: localhost
         MONGO_PORT: 27017
@@ -50,13 +53,15 @@ services:
         RABBITMQ_PORT: 5672
         RABBITMQ_USER: guest
         RABBITMQ_PASSWORD: guest
+    network_mode: host
     depends_on:
         - mongodb
         - rabbitmq
     restart: always
+networks:
+    backend:
 volumes:
     db-data:
-      external: true
+      external: false
     ton-node-db:
-      external: true
-      name: ton-node-db
+      external: false

@@ -11,4 +11,4 @@ cat /var/ton-work/log
 echo "Running celery"
 cd /usr/src/app
 export PYTHONPATH=/usr/src/mytonctrl
-celery -A backend.backgroud worker -B --loglevel="INFO"
+celery -A backend.background worker -B --loglevel="INFO"
