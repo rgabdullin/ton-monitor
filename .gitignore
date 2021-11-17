@@ -2,3 +2,6 @@
 /venv
 /.vscode
 __pycache__/
+celerybeat-schedule
+/logs
+*.ipynb

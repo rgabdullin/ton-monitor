@@ -39,6 +39,6 @@ ADD deploy/ /usr/src/app/deploy/
 ADD run_web_server.py /usr/src/app/
 WORKDIR /usr/src/app
 
-ADD deploy/scripts/run_node.sh /usr/src/app/entrypoint.sh
+ADD deploy/scripts/entrypoint_node.sh /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
