@@ -76,7 +76,7 @@ def add_masterchain_block(self, block_ext_id, timestamp):
         # check for validator sync
         db = get_database(MONGO_DATABASE)
         sync = db.validator_status.find_one({})
-        sync = sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()
+        sync = (sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()) if sync is not None else 1e9
         if sync > 60:
             logger.warning(f"Skipping, local validator is out of sync: {sync} seconds")
             return
