@@ -8,5 +8,7 @@ systemctl start mytoncore
 echo "Check logs, wait for Accept"
 cat /var/ton-work/log
 
-echo "Run /bin/bash"
-/bin/bash
+echo "Running celery"
+cd /usr/src/app
+export PYTHONPATH=/usr/src/mytonctrl
+celery -A backend.backgroud worker -B --loglevel="INFO"

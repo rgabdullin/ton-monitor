@@ -1,26 +1,62 @@
 version: '3.9'
+environment:
+
 services:
+  # database
   mongodb:
     image: mongo:4.0.12
     volumes:
         - db-data:/data/db
     ports:
         - 27017:27017
+    restart: always
+  # message queue
   rabbitmq:
     image: rabbitmq
     ports:
         - 5672:5672
-#   backend:
-#     build: 
-#         context: .
-#         dockerfile: deploy/Dockerfile.backend
-#     environment: 
-#         MONGO_HOST: mongodb
-#         RABBITMQ_HOST: rabbitmq
-#     depends_on: 
-#         - mongodb
-#         - rabbitmq
-#     ports:
-#         - 8080:8080
+    restart: always
+  # web server
+  flask-backend:
+    build: 
+        context: .
+        dockerfile: deploy/Dockerfile.backend
+    environment: 
+        MONGO_HOST: mongodb
+        MONGO_PORT: 27017
+        MONGO_DATABASE: production_ton_monitor
+        RABBITMQ_HOST: rabbitmq
+        RABBITMQ_PORT: 5672
+        RABBITMQ_USER: guest
+        RABBITMQ_PASSWORD: guest
+    depends_on: 
+        - mongodb
+        - rabbitmq
+        - ton-service
+    ports:
+        - 8080:8080
+  # ton + celery
+  ton-service:
+    build:
+        context: .
+        dockerfile: deploy/Dockerfile.node
+    volumes:
+        - ton-node-db:/data/db
+    environment: 
+        MONGO_HOST: localhost
+        MONGO_PORT: 27017
+        MONGO_DATABASE: production_ton_monitor
+        RABBITMQ_HOST: localhost
+        RABBITMQ_PORT: 5672
+        RABBITMQ_USER: guest
+        RABBITMQ_PASSWORD: guest
+    depends_on:
+        - mongodb
+        - rabbitmq
+    restart: always
 volumes:
     db-data:
+      external: true
+    ton-node-db:
+      external: true
+      name: ton-node-db
