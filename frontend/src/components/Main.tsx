@@ -1,6 +1,5 @@
 import React from "react";
-import { API_URL } from "../api/ApiTools";
-import api, {
+import {
   getGovernance,
   getTps,
   getTonBridgeStats,
@@ -14,12 +13,10 @@ import {
   GovernanceProps,
   LastBlockType,
   TonBridgesItem,
-  TonBridgesProps,
   TPSType,
   TransactionStatsType,
   ValidatorCountsType,
 } from "./types";
-import { getText } from "./helpers";
 import { Box, CircularProgress, Grid } from "@mui/material";
 import Uptimes from "./Uptimes";
 import InfoBlock from "./InfoBlock/InfoBlock";

@@ -55,7 +55,7 @@ const Uptimes: React.FC = (...props) => {
     });
   return (
     <>
-      <Grid container columnSpacing="25px" rowSpacing="15px">
+      <Grid container columnSpacing="25px" rowSpacing="25px">
         {graphData.map((item, index) => (
           <InfoBlockItem
             xs={12}

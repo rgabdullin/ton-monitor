@@ -1,4 +1,4 @@
-import { Grid, Link, Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import React from "react";
 import { getText } from "./helpers";
 import { TonBridgesItem, TonBridgesProps } from "./types";

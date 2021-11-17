@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import React from "react";
 import { InfoBlockItemProps } from "../types";
 import styles from "./InfoBlock.module.scss";
