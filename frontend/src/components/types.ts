@@ -134,3 +134,24 @@ export type LastBlockType = {
 export type TonBridgesProps = {
   model: TonBridgesItem[];
 }
+
+export type TransactionStatsType = {
+  gas_used: number;
+  total: number;
+  transaction_type: string;
+  value: number;
+}
+
+export type TransactionStatsProps = {
+  model: TransactionStatsType[];
+}
+
+export type Validator = {
+  adnlAddr: string;
+  efficiency: number;
+  mr: string;
+  online: boolean;
+  pubkey: string;
+  wr: number;
+  weight: number;
+}

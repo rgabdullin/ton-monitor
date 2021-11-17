@@ -15,7 +15,7 @@ const InfoBlock: React.FC<InfoBlockProps> = (props: InfoBlockProps) => {
       sx={{ display: "flex", justifyContent: "center" }}
       className={styles.infoBlock}
     >
-      <Grid container columns={12} columnSpacing="25px">
+      <Grid container columns={12} columnSpacing="25px" rowSpacing="15px">
         {modelIsAvailable &&
           getRenderModel(model).map((item) => (
             <InfoBlockItem {...item} key={item.labelKey} />
