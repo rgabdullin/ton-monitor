@@ -1,5 +1,4 @@
 import Main from "../Main";
-import Uptimes from "../Uptimes";
 import Liteservers from "../Liteservers";
 import Validators from "../Validators";
 

@@ -1,7 +1,7 @@
-import { Grid, Link, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import React from "react";
 import { getText } from "./helpers";
-import { TransactionStatsType, TransactionStatsProps } from "./types";
+import { TransactionStatsProps } from "./types";
 
 const TransactionStats: React.FC<TransactionStatsProps> = (
   props: TransactionStatsProps

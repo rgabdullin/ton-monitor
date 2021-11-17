@@ -1,4 +1,4 @@
-import { Grid, Box, Typography, Divider } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import React from "react";
 import { getText } from "./helpers";
 import { GovernanceProps } from "./types";

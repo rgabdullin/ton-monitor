@@ -4,6 +4,7 @@ import {
   Typography,
   ToggleButtonGroup,
   ToggleButton,
+  Grid,
 } from "@mui/material";
 import { publicRoutes } from "../../router/routes";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -12,11 +13,9 @@ import { ReactComponent as ReactLogo } from "./icon.svg";
 import styles from "./Navbar.module.scss";
 
 const Navbar: React.FC = () => {
-  const location = useLocation().pathname;
-  const [currentRoute, setCurrentRoute] = React.useState("");
-  React.useEffect(() => {
-    setCurrentRoute(location);
-  }, []);
+  const [currentRoute, setCurrentRoute] = React.useState(
+    useLocation().pathname
+  );
   const onChangeHandler = (
     event: React.MouseEvent<HTMLElement>,
     newRoute: string
@@ -25,41 +24,39 @@ const Navbar: React.FC = () => {
   };
   return (
     <Toolbar className={styles.toolbar}>
-      <Typography
-        component="h1"
-        variant="h4"
-        noWrap
-        className={styles.toolbarTitle}
-      >
-        <ReactLogo className={styles.logo} />
-      </Typography>
-      <Typography
-        component="h1"
-        variant="h4"
-        noWrap
-        className={styles.toolbarTitle}
-      >
-        {getText("navbar.title")}
-      </Typography>
-      <ToggleButtonGroup
-        value={currentRoute}
-        exclusive
-        onChange={onChangeHandler}
-        style={{ marginLeft: "auto" }}
-        className={styles.toggleButtonGroup}
-      >
-        {publicRoutes.map((item, index) => (
-          <ToggleButton
-            value={item.path}
-            component={RouterLink}
-            to={item.path}
-            key={item.path}
-            className={styles.toggleButton}
+      <Grid container>
+        <Grid item xs={12} md={5}>
+          <Typography
+            component="h1"
+            variant="h4"
+            noWrap
+            className={styles.toolbarTitle}
           >
-            {item.text}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+            <ReactLogo className={styles.logo} />
+            {getText("navbar.title")}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={7} style={{ textAlign: "end" }}>
+          <ToggleButtonGroup
+            value={currentRoute}
+            exclusive
+            onChange={onChangeHandler}
+            className={styles.toggleButtonGroup}
+          >
+            {publicRoutes.map((item, index) => (
+              <ToggleButton
+                value={item.path}
+                component={RouterLink}
+                to={item.path}
+                key={item.path}
+                className={styles.toggleButton}
+              >
+                {item.text}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Grid>
+      </Grid>
     </Toolbar>
   );
 };

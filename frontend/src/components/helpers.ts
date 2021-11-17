@@ -1,5 +1,5 @@
 import { texts } from './texts';
-import { TPSType, InfoBlockItemProps, InfoBlockModel } from './types';
+import { InfoBlockItemProps, InfoBlockModel } from './types';
 
 export const getText = (key: string) => {
     return texts[key] || "";

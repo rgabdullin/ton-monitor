@@ -1,7 +1,7 @@
-import { Grid, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import React from "react";
 import { getLiteServers } from "../api/Api";
-import { TColumn, DataGridItem, LiteServer } from "./types";
+import { TColumn, LiteServer } from "./types";
 import DataGrid from "./ui/DataGrid/DataGrid";
 
 const Liteservers: React.FC = () => {
@@ -17,7 +17,7 @@ const Liteservers: React.FC = () => {
       console.log("%ctimer unmounted", "color: #8B4513");
       clearInterval(timer);
     };
-  }, [getLiteServers, setLiteServers]);
+  });
   const columns: TColumn[] = [
     { name: "Index", type: "string", key: "index" },
     { name: "IP", type: "string", key: "ip" },
