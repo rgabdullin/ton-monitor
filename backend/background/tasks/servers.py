@@ -171,12 +171,7 @@ def update_governance_stats(self):
         governance_collection = db.governance
         
         # create if something wrong
-        if governance_collection.count_documents({}) != 1:
-            db.drop_collection('governance')
-            governance_collection.insert_one(governance)
-        
-        # update
-        governance_collection.replace_one({}, governance)
+        mongo_upload_single(governance, governance_collection)
         logger.info('Governance stats updated')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()

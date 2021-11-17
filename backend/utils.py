@@ -69,3 +69,12 @@ def update_mongo_collection(new, old, collection, key):
         else:
             collection.insert_one(x)
     return
+
+# mongo upload single
+def mongo_upload_single(value, collection):
+    if collection.count_documents({}) != 1:
+        collection.drop()
+        collection.insert_one(value)
+    else:
+        collection.replace_one({}, value)
+    return

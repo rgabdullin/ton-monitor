@@ -64,8 +64,6 @@ def update_transactions(self, block, info=None):
         if transactions:
             transactions_collection.insert_many(transactions)
             transaction_details_collection.insert_many(transaction_details)
-
-        logger.info('Transactions updated')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
@@ -74,38 +72,66 @@ def update_transactions(self, block, info=None):
 
 @app.task(bind=True)
 def add_masterchain_block(self, block_ext_id, timestamp):
-    blocks = []
+    try:
+        # check for validator sync
+        db = get_database(MONGO_DATABASE)
+        sync = db.validator_status.find_one({})
+        sync = sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()
+        if sync > 60:
+            logger.warning(f"Skipping, local validator is out of sync: {sync} seconds")
+            return
+        
+        # else
+        blocks = []
+        queue = [block_ext_id]
+        while len(queue) > 0:
+            block = queue.pop(0)
+            chain_id, _, block_number = parse_block_ext_id(block)
 
-    queue = [block_ext_id]
-    while len(queue) > 0:
-        block = queue.pop(0)
-        chain_id, _, block_number = parse_block_ext_id(block)
+            # shards
+            shards = ton.GetShards(block)
+            for shard in shards:
+                if 'block' in shard:
+                    queue.append(shard['block'])
 
-        # shards
-        shards = ton.GetShards(block)
-        for shard in shards:
-            if 'block' in shard:
-                queue.append(shard['block'])
+            block_info = {
+                'timestamp': timestamp,
+                'block_ext_id': block,
+                'workchain_id': chain_id,
+                'block_number': block_number,
+                'shards': len(shards)
+            }
+            blocks.append(block_info)
+        #end while
 
-        block_info = {
-            'timestamp': timestamp,
-            'block_ext_id': block,
-            'workchain_id': chain_id,
-            'block_number': block_number,
-            'shards': len(shards)
-        }
-        blocks.append(block_info)
-    #end while
+        # insert
+        blocks_collection = db.blocks
+        blocks_collection.insert_many(blocks)
+        # update transactions
+        for block in blocks:
+            update_transactions.delay(block=block['block_ext_id'], info={'timestamp': timestamp})
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
+    except:
+        logger.critical(f"Failed to update blocks: {traceback.format_exc()}")
 
-    # insert
-    db = get_database(MONGO_DATABASE)
-    blocks_collection = db.blocks
-    blocks_collection.insert_many(blocks)
-    logger.info(f"Blocks updated")
 
-    # update transactions
-    for block in blocks:
-        update_transactions.delay(block=block['block_ext_id'], info={'timestamp': timestamp})
+@app.task(bind=True)
+def update_local_validator_status(self):
+    try:
+        validator_status = ton.GetValidatorStatus()
+        timestamp = datetime.now()
+        validator_status['timestamp'] = timestamp
+
+        # insert
+        db = get_database(MONGO_DATABASE)
+        validator_status_collection = db.validator_status
+        mongo_upload_single(validator_status, validator_status_collection)
+        # logger.debug("Local Validator Status updated")
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
+    except:
+        logger.critical(f"Failed to update local validator status: {traceback.format_exc()}")
 
 
 @app.task(bind=True)

@@ -44,6 +44,11 @@ app.conf.beat_schedule = {
         "schedule": 30.0,
         'options': {'expires': 120.0}
     },
+    "update_local_validator_status": {
+        "task": "backend.background.tasks.blockchain.update_local_validator_status",
+        "schedule": 1.0,
+        "options": {'expires': 20.0}
+    }
 }
 
 
