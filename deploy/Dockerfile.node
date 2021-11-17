@@ -35,7 +35,6 @@ RUN pip3 install -r /tmp/requirements.txt
 
 # entrypoint
 ADD backend/ /usr/src/app/backend/
-ADD deploy/ /usr/src/app/deploy/
 ADD run_web_server.py /usr/src/app/
 WORKDIR /usr/src/app
 

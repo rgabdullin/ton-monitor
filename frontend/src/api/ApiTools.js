@@ -2,7 +2,7 @@ import axios from "axios";
 // @ts-ignore
 import Apipie from "apipie";
 import endPoints from "./endPoints";
-export const API_URL = "http://dev2.ton-status.com:8081";
+export const API_URL = "http://dev2.ton-status.com:8080";
 const routes = [endPoints];
 
 axios.defaults.baseURL = API_URL;

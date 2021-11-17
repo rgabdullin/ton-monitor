@@ -1,45 +1,45 @@
 version: '3.7'
 services:
-  # database
-  mongodb:
-    image: mongo:4.0.12
-    volumes:
-        - db-data:/data/db
-    networks: 
-        - backend
-    ports:
-        - 27017:27017
-    restart: always
-  # message queue
-  rabbitmq:
-    image: rabbitmq
-    networks: 
-        - backend
-    ports:
-        - 5672:5672
-    restart: always
-  # ton + celery
-  ton-node:
-    build:
-        context: .
-        dockerfile: deploy/Dockerfile.node
-    volumes:
-        - ton-node-db:/var/ton-work/db
-    environment: 
-        MONGO_HOST: localhost
-        MONGO_PORT: 27017
-        MONGO_DATABASE: production_ton_monitor
-        RABBITMQ_HOST: localhost
-        RABBITMQ_PORT: 5672
-        RABBITMQ_USER: guest
-        RABBITMQ_PASSWORD: guest
-    network_mode: host
-    depends_on:
-        - mongodb
-        - rabbitmq
-    restart: always
+    # database
+    mongodb:
+        image: mongo:4.0.12
+        volumes:
+            - db-data:/data/db
+        networks: 
+            - backend
+        ports:
+            - 27017:27017
+        restart: always
+    # message queue
+    rabbitmq:
+        image: rabbitmq
+        networks: 
+            - backend
+        ports:
+            - 5672:5672
+        restart: always
+    # ton + celery
+    ton-node:
+        build:
+            context: .
+            dockerfile: deploy/Dockerfile.node
+        volumes:
+            - ton-node-db:/var/ton-work/db
+        environment: 
+            MONGO_HOST: localhost
+            MONGO_PORT: 27017
+            MONGO_DATABASE: production_ton_monitor
+            RABBITMQ_HOST: localhost
+            RABBITMQ_PORT: 5672
+            RABBITMQ_USER: guest
+            RABBITMQ_PASSWORD: guest
+        network_mode: host
+        depends_on:
+            - mongodb
+            - rabbitmq
+        restart: always
     # web server
-    web:
+    flask-server:
         build: 
             context: .
             dockerfile: deploy/Dockerfile.web
@@ -54,14 +54,21 @@ services:
         ports:
             - 8080:8080
         restart: always
-    # # react app
-    # frontend:
-    #     build:
-    #         context: .
+    # react app
+    frontend:
+        build:
+            context: .
+            dockerfile: deploy/Dockerfile.frontend
+        networks:
+            - backend
+        ports:
+            - 80:3000
+        restart: always
+    # TODO: make nginx
 networks:
     backend:
 volumes:
     db-data:
-      external: false
+        external: false
     ton-node-db:
-      external: false
+        external: false

@@ -20,7 +20,9 @@ ADD requirements.txt /tmp/requirements.txt
 RUN pip3 install -r /tmp/requirements.txt
 
 # entrypoint
-ADD . /usr/src/app
+ADD web /usr/src/app/web
+ADD backend /usr/src/app/backend
+ADD run_web_server.py /usr/src/app/
 
 WORKDIR /usr/src/app
 EXPOSE 8080

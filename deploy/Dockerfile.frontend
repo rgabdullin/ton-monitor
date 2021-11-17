@@ -15,9 +15,10 @@ RUN yarn --version
 # install deps
 COPY frontend/package.json frontend/yarn.lock /usr/src/app/
 WORKDIR /usr/src/app
-RUN yarn install --frozen-lockfile
+RUN npm install 
 
 # copy app
 ADD frontend/ /usr/src/app/
-
-ENTRYPOINT ["/bin/bash"]
+ADD deploy/scripts/entrypoint_frontend.sh /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

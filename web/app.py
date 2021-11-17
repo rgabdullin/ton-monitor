@@ -42,15 +42,24 @@ def get_liteservers():
     result = list(database.liteservers.find({}))
     for r in result:
         r.pop('_id')
+        r.pop('timestamp')
     return jsonify(result)
 
 
 @app.route("/api/getValidators")
 def get_validators():
     result = list(database.validators.find({}))
+    result2 = []
     for r in result:
         r.pop('_id')
-    return jsonify(result)
+        l = {
+            'adnlAddr': r['adnlAddr'],
+            'efficiency': r['efficiency'],
+            'weight': r['weight'],
+            'online': r['online'],
+        }
+        result2.append(l)
+    return jsonify(result2)
 
 
 @app.route("/api/getValidatorCounts")
@@ -273,14 +282,14 @@ def get_transaction_stats(hours=24):
 
 @app.route("/")
 def index():
-    return jsonify(["/api/getGovernance",
-                    "/api/getLiteServers",
-                    "/api/getValidators",
-                    "/api/getValidatorCounts",
+    return jsonify(["/api/getGovernance",#
+                    "/api/getLiteServers",#
+                    "/api/getValidators",#
+                    "/api/getValidatorCounts", #
                     "/api/getLocalValidatorStatus",
-                    "/api/getTonBridgeStats",
-                    "/api/getTonApisStats",
-                    "/api/getBlockRate",
-                    "/api/getTps",
-                    "/api/getLastBlock",
-                    "/api/getTransactionStats"])
+                    "/api/getTonBridgeStats",#
+                    "/api/getTonApisStats",#
+                    "/api/getBlockRate",# 
+                    "/api/getTps", #
+                    "/api/getLastBlock",# 
+                    "/api/getTransactionStats"])#

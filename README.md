@@ -40,3 +40,7 @@ Just run `docker-compose up -d --build`. On updates run `docker-compose build <s
 Best practice is to run them from docker-compose. It will correctly mount data volumes and bind ports.
 1. Run `sudo docker-compose up -d mongodb`.
 2. Run `sudo docker-compose up -d rabbitmq`.
+
+
+## Issues
+* No nginx, in file `frontend/src/ApiTools.js` place your IP or domain name with port 8080 to address API requests to Backend.
