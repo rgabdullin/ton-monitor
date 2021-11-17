@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from backend.web import app
+from web import app
 from argparse import ArgumentParser
 from loguru import logger
 
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     args = argparser.parse_args()
 
     if args.demo:
-        from backend.web import app_demo
+        from web import app_demo
         
         logger.warning("Running demo server")
         app_demo.run(host=args.ip, port=args.port)

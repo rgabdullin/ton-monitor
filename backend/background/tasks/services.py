@@ -65,7 +65,8 @@ def update_ton_bridges_stats(self):
     try:
         bridges = []
         for bridge_dict in TON_BRIDGES:
-            resp = R.get(bridge_dict['url'])
+            url = bridge_dict['url']
+            resp = R.get(url)
             
             # web page status
             web_page_avaliable = False
@@ -86,12 +87,19 @@ def update_ton_bridges_stats(self):
                         if len(row) > 0:
                             smart_contract_state = int(row[0])
             # results
+            if available:
+                runs = 5
+                resp_time = [R.get(url, timeout=2).elapsed.total_seconds() * 1000 for _ in range(runs)]
+                resp_time = [x for x in resp_time if x is not None]
+                resp_time = sum(resp_time) / len(resp_time)
+
             timestamp = datetime.now()
             loc = {
                 'timestamp': timestamp, 
                 'name': bridge_dict['name'],
                 'url': bridge_dict['url'],
                 'web_page_available': web_page_avaliable,
+                'response_time': resp_time,
                 'smart_contract_state': smart_contract_state
             }
             bridges.append(loc)
