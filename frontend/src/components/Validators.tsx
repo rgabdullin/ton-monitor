@@ -6,9 +6,11 @@ import DataGrid from "./ui/DataGrid/DataGrid";
 
 const Validators: React.FC = () => {
   const [validators, setValidators] = React.useState<Validator[]>([]);
-  console.log("Validators updated");
-  const updateState: () => void = () =>
+
+  const updateState: () => void = () => {
+    console.log("Validators updated");
     getValidators().then((data: Validator[]) => setValidators(data));
+  };
   React.useEffect(() => {
     updateState();
     let timer = setInterval(() => updateState(), 5000);
