@@ -17,7 +17,7 @@ const Validators: React.FC = () => {
       console.log("%ctimer unmounted", "color: #8B4513");
       clearInterval(timer);
     };
-  });
+  }, [setValidators]);
   const columns: TColumn[] = [
     { name: "Index", type: "string", key: "index" },
     { name: "ADNL address", type: "string", key: "adnlAddr" },

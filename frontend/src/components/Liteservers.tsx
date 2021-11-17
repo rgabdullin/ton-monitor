@@ -17,7 +17,7 @@ const Liteservers: React.FC = () => {
       console.log("%ctimer unmounted", "color: #8B4513");
       clearInterval(timer);
     };
-  });
+  }, [setLiteServers]);
   const columns: TColumn[] = [
     { name: "Index", type: "string", key: "index" },
     { name: "IP", type: "string", key: "ip" },
