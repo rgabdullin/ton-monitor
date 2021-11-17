@@ -1,11 +1,21 @@
 import React from "react";
 import { API_URL } from "../api/ApiTools";
-import api, { getGovernance, getNetworkStats, getTonBridges } from "../api/Api";
+import api, {
+  getGovernance,
+  getTps,
+  getTonBridgeStats,
+  getBlockRate,
+  getValidatorCounts,
+  getLastBlock,
+} from "../api/Api";
 import {
+  BlockRateType,
   GovernanceProps,
+  LastBlockType,
   TonBridgesItem,
   TonBridgesProps,
   TPSType,
+  ValidatorCountsType,
 } from "./types";
 import { getText } from "./helpers";
 import { Box, CircularProgress, Grid } from "@mui/material";
@@ -16,26 +26,44 @@ import Governance from "./Governance";
 import TonBridges from "./TonBridges";
 const Main: React.FC = () => {
   const [isLoaded, setIsLoaded] = React.useState(false);
-  const [networkStats, setNetworkStats] = React.useState<TPSType>(
-    {} as TPSType
+  const [tps, setTps] = React.useState<TPSType>({} as TPSType);
+  const [blockRate, setBlockRate] = React.useState<BlockRateType[]>(
+    [] as BlockRateType[]
   );
+  const [validatorCounts, setValidatorCounts] =
+    React.useState<ValidatorCountsType>({} as ValidatorCountsType);
   const [governance, setGovernance] = React.useState<GovernanceProps>(
     {} as GovernanceProps
   );
   const [tonBridges, setTonBridges] = React.useState<TonBridgesItem[]>([]);
+  const [lastBlock, setLastBlock] = React.useState<LastBlockType>(
+    {} as LastBlockType
+  );
   const getAllData = () => {
-    getNetworkStats()
-      .then((data) => setNetworkStats(data))
+    getTps()
+      .then((data) => setTps(data))
       .then(() => setIsLoaded(true))
-      .then(() => console.log("%cgetNetworkStats called ", "color: #008000"));
+      .then(() => console.log("%cgetTps called ", "color: #008000"));
+    getBlockRate()
+      .then((data) => setBlockRate(data))
+      .then(() => setIsLoaded(true))
+      .then(() => console.log("%cgetBlockRate called ", "color: #008000"));
+    getValidatorCounts()
+      .then((data) => setValidatorCounts(data))
+      .then(() => setIsLoaded(true))
+      .then(() => console.log("%cgetBlockRate called ", "color: #008000"));
     getGovernance()
       .then((data) => setGovernance(data))
       .then(() => setIsLoaded(true))
       .then(() => console.log("%cgetGovernance called ", "color: #008000"));
-    getTonBridges()
+    getTonBridgeStats()
       .then((data) => setTonBridges(data))
       .then(() => setIsLoaded(true))
-      .then(() => console.log("%cgetTonBridges called ", "color: #008000"));
+      .then(() => console.log("%cgetTonBridgeStats called ", "color: #008000"));
+    getLastBlock()
+      .then((data) => setLastBlock(data))
+      .then(() => setIsLoaded(true))
+      .then(() => console.log("%cgetLastBlock called ", "color: #008000"));
   };
   React.useEffect(() => {
     getAllData();
@@ -54,8 +82,15 @@ const Main: React.FC = () => {
         </Box>
       ) : (
         <>
-          {Object.keys(networkStats).length > 0 && (
-            <InfoBlock model={networkStats} />
+          {Object.keys(tps).length > 0 && (
+            <InfoBlock
+              model={{
+                tps,
+                blockRate,
+                validatorCounts,
+                shardchains: lastBlock.shards,
+              }}
+            />
           )}
           <Uptimes />
           <Grid container columnSpacing="50px">

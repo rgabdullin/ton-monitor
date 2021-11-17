@@ -1,17 +1,42 @@
 import api from './ApiTools';
 
-export const getNetworkStats = async() => {
-    const { response } = await api.get.networkStats();
+export const getBlockRate = async() => {
+    const { response } = await api.get.blockRate();
     return response;
 }
 
-export const getTonApis = async() => {
-    const { response } = await api.get.tonApis();
+export const getTps = async() => {
+    const { response } = await api.get.tps();
     return response;
 }
 
-export const getTonBridges = async() => {
-    const { response } = await api.get.tonBridges();
+export const getLastBlock = async() => {
+    const { response } = await api.get.lastBlock();
+    return response;
+}
+
+export const getValidators = async() => {
+    const { response } = await api.get.validatorStatus();
+    return response;
+}
+
+export const getLocalValidatorStatus = async() => {
+    const { response } = await api.get.localValidatorStatus();
+    return response;
+}
+
+export const getTonApisStats = async() => {
+    const { response } = await api.get.tonApisStats();
+    return response;
+}
+
+export const getTonBridgeStats = async() => {
+    const { response } = await api.get.tonBridgeStats();
+    return response;
+}
+
+export const getTransactionStats = async() => {
+    const { response } = await api.get.transactionStats();
     return response;
 }
 
@@ -25,8 +50,8 @@ export const getLiteServers = async() => {
     return response;
 }
 
-export const getBasicOnChainStats = async() => {
-    const { response } = await api.get.basicOnChainStats();
+export const getValidatorCounts = async() => {
+    const { response } = await api.get.validatorCounts();
     return response;
 }
 

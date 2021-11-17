@@ -1,18 +1,25 @@
 import InfoBlockItem from "./InfoBlock/InfoBlockItem";
 
 export type BlockRateType = {
-  basechain: number;
-  masterchain: number;
+  blocks_per_second: number;
+  seconds_per_block: number;
+  workchain_id: string;
 };
 
+
 export type TPSType = {
-  block_rate: BlockRateType;
-  shardchains: number;
-  tps: number;
-  validators: {
-    online: number;
-    total: number;
-  };
+  transactions_per_second: number;
+};
+
+export type ValidatorsType = {
+  adnlAddr: string;
+  efficiency: number;
+  mr: number;
+  online: true;
+  pubkey: string;
+  timestamp: Date;
+  weight: number;
+  wr: number;
 };
 
 export type Point = {
@@ -21,10 +28,10 @@ export type Point = {
 };
 
 export type UptimesDataType = {
-  host: string;
-  response_times: number[];
-  timestamps: number[];
-  uptimes: number[];
+  service_name: string;
+  response_time: number[];
+  timestamp: number[];
+  available: number[];
 };
 
 export type GraphProps = {
@@ -37,8 +44,19 @@ export type GraphProps = {
   };
 };
 
+export type InfoBlockModel = {
+  tps: TPSType;
+  blockRate: BlockRateType[];
+  validatorCounts: ValidatorCountsType;
+  shardchains: number;
+};
+export type ValidatorCountsType = {
+  online: number;
+  total: number;
+};
+
 export type InfoBlockProps = {
-  model: TPSType;
+  model: InfoBlockModel;
 };
 
 export type DataGridItem = {
@@ -100,9 +118,17 @@ export type GovernanceProps = {
 
 export type TonBridgesItem = {
   name: string;
-  smart_contract_state: string | number | null;
+  smart_contract_state: number[];
   url: string;
-  web_page_status: string
+  web_page_available: number[];
+  response_time: number[];
+  timestamp: number[];
+}
+
+export type LastBlockType = {
+  masterchain: string;
+  basechain: string;
+  shards: number;
 }
 
 export type TonBridgesProps = {

@@ -18,12 +18,30 @@
   }
   &_tonBridges {
     background-color: rgba(82, 161, 219, 0.35);
+    padding: 15px;
     color: black;
+    text-align: start;
+    :global(.title > a) {
+      text-transform: uppercase;
+      font-size: 20px;
+    }
+    :global(.status) {
+      text-transform: none;
+      float: right;
+      &:global(.available) {
+        color: green;
+      }
+      &:global(.not_available) {
+        color: red;
+      }
+    }
   }
   &_governance {
     background-color: rgba(82, 161, 219, 0.35);
+    padding: 15px;
     color: black;
     font-weight: bold;
+    text-align: start;
   }
 }
 .splittedBlock {

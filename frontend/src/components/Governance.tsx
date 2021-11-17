@@ -8,43 +8,40 @@ const Governance: React.FC<GovernanceProps> = (props: GovernanceProps) => {
   const { complaints, elections, offers } = props;
   return (
     <>
-      <Typography variant="h5">{getText("governance.title")}</Typography>
+      <Typography variant="h4">{getText("governance.title")}</Typography>
       <Typography variant="body1">
         {getText("governance.election")}: {elections.status}
       </Typography>
       <Grid container>
         {elections.status === "open" && (
-          <Grid item xs={6}>
+          <Grid item xs={7}>
             <div>
               <Typography variant="body1">
-                {getText("governance.election.closes")}:
+                {getText("governance.election.closes")}: {elections.end}
               </Typography>
-              <Typography variant="body1">{elections.end}</Typography>
+              <Typography variant="body1">
+                {getText("governance.election.next_starts")}:{" "}
+                {elections.start_next}
+              </Typography>
             </div>
           </Grid>
         )}
-        <Grid item xs={elections.status === "open" ? 6 : 12}>
+        <Grid item xs={5}>
           <div>
             <Typography variant="body1">
-              {getText("governance.election.next_starts")}:
+              {getText("governance.offers")}: {offers.all}
+              {offers.new ? `(+${offers.new})` : ""}
             </Typography>
-            <Typography variant="body1">{elections.start_next}</Typography>
+            <Typography variant="body1">
+              {getText("governance.complaints")}: {complaints.all}
+              {complaints.new ? `(+${complaints.new})` : ""}
+            </Typography>
           </div>
         </Grid>
       </Grid>
       <Grid container>
-        <Grid item xs={6}>
-          <Typography variant="body1">
-            {getText("governance.offers")}: {offers.all}
-            {offers.new ? `(+${offers.new})` : ""}
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1">
-            {getText("governance.complaints")}: {complaints.all}
-            {complaints.new ? `(+${complaints.new})` : ""}
-          </Typography>
-        </Grid>
+        <Grid item xs={6}></Grid>
+        <Grid item xs={6}></Grid>
       </Grid>
     </>
   );
