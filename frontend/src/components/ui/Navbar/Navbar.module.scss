@@ -1,0 +1,44 @@
+.toolbar {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto 40px;
+  padding: 0 !important;
+  &Title {
+    color: #313855;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 35px;
+  }
+
+  .toggleButton {
+    color: #0088ca;
+    text-transform: none;
+    padding: 6px 20px;
+    border: none;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 5px !important;
+    &Group {
+      .MuiButtonBase-root.MuiSelected {
+        background-color: #0088ca !important;
+        color: white;
+      }
+    }
+    &.Mui-selected {
+      background-color: #0088ca !important;
+      color: white !important;
+    }
+    &:global(.Mui-selected) {
+      background-color: #0088ca !important;
+      color: white !important;
+    }
+  }
+}
+.logo {
+  transition: 0.5s;
+  vertical-align: middle;
+  margin-right: 10px;
+  &:hover {
+    transform: rotateZ(180deg);
+  }
+}

@@ -1,13 +1,13 @@
-const TPS = {
-  name: "TPS",
+const getNetworkStats = {
+  name: "networkStats",
   method: "get",
-  url: "getTPS",
+  url: "getNetworkStats",
 };
 
-const getUptime = {
-  name: "uptime",
+const getTonBridges = {
+  name: "tonBridges",
   method: "get",
-  url: "getUptime",
+  url: "getTonBridges",
 };
 
 const getGovernance = {
@@ -16,26 +16,26 @@ const getGovernance = {
   url: "getGovernance",
 };
 
-const getLiteservers = {
-  name: "liteservers",
+const getLiteServers = {
+  name: "liteServers",
   method: "get",
-  url: "getLiteservers",
+  url: "getLiteServers",
 };
 
-const getBasicOnChainStats = {
-  name: "basicOnChainStats",
+const getTonApis = {
+  name: "tonApis",
   method: "get",
-  url: "getBasicOnChainStats",
+  url: "getTonApis",
 };
 
 const exported = {
   name: "get",
   url: "/api/",
   children: [
-    TPS,
-    getUptime,
-    getLiteservers,
-    getBasicOnChainStats,
+    getNetworkStats,
+    getTonBridges,
+    getLiteServers,
+    getTonApis,
     getGovernance,
   ],
 };

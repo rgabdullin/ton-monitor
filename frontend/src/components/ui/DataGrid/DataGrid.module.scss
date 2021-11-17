@@ -1,0 +1,9 @@
+.table {
+  justify-content: center;
+  border-radius: 10px;
+  &Container {
+  }
+  :global(.MuiTableHead-root) {
+    background-color: rgba(14, 116, 192, 0.2);
+  }
+}

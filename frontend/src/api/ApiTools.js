@@ -2,7 +2,7 @@ import axios from "axios";
 // @ts-ignore
 import Apipie from "apipie";
 import endPoints from "./endPoints";
-export const API_URL = "http://51.250.1.141:8080";
+export const API_URL = "http://51.250.1.141:8081";
 const routes = [endPoints];
 
 axios.defaults.baseURL = API_URL;

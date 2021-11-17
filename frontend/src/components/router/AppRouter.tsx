@@ -1,5 +1,5 @@
 import { Redirect, Route, Switch } from "react-router-dom";
-import { privateRoutes, publicRoutes } from "./routes";
+import { publicRoutes } from "./routes";
 
 const AppRouter = () => {
   return (
@@ -9,10 +9,10 @@ const AppRouter = () => {
           component={route.component}
           path={route.path}
           exact={route.exact}
-          key={route.path}
+          key={route.text}
         />
       ))}
-      <Redirect to="/main" />
+      <Redirect to="/" />
     </Switch>
   );
 };

@@ -1,26 +1,39 @@
 .infoBlock {
   margin-bottom: 30px;
-  border: 1px solid rgba(14, 116, 192, 0.2);
   border-radius: 20px;
   color: #0c558b;
-  .infoBlockItem {
-    margin: auto;
-    text-align: center;
-    padding: 5px 10px;
-    &:not(:last-child) {
-      border-right: 1px solid rgba(14, 116, 192, 0.2);
-    }
+}
+.infoBlockItem {
+  text-align: center;
+  padding: 5px 10px;
+  border: 1px solid rgba(14, 116, 192, 0.2);
+  height: 100%;
+  border-radius: 25px;
+  background-color: #0088ca;
+  color: white;
+  &_uptime {
+    background-color: white;
+    box-shadow: 0px 0px 20px 5px rgba(14, 116, 192, 0.2);
+    color: black;
+  }
+  &_tonBridges {
+    background-color: rgba(82, 161, 219, 0.35);
+    color: black;
+  }
+  &_governance {
+    background-color: rgba(82, 161, 219, 0.35);
+    color: black;
+    font-weight: bold;
   }
 }
-
-.validatorsBlock {
+.splittedBlock {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   &Item {
-    width: calc(50% - 1px);
+    flex: 1 10 10%;
     &:not(:last-child) {
-      border-right: 2px solid rgba(14, 116, 192, 0.2);
+      border-right: 1px solid white;
     }
   }
 }

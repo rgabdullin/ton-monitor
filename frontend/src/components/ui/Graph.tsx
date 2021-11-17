@@ -13,16 +13,23 @@ import { curveMonotoneX } from "@visx/curve";
 
 import { Divider, Grid, Typography } from "@mui/material";
 import { GraphProps } from "../types";
+import { getText } from "../helpers";
 
 const Graph: React.FC<GraphProps> = (props: GraphProps) => {
   const { firstGraph, secondGraph, accessors, title } = props;
 
   return (
     <>
-      <Typography variant="h6" align="center">
-        {title}
-      </Typography>
       <Grid container>
+        <Typography
+          variant="h6"
+          style={{ width: "100%", textAlign: "start", padding: "0 20px" }}
+        >
+          {title} {getText("uptime.uptime")}
+          <span style={{ float: "right" }}>
+            {firstGraph[firstGraph.length - 1].y}%
+          </span>
+        </Typography>
         <Grid item xs={12}>
           <XYChart
             height={180}
@@ -65,6 +72,15 @@ const Graph: React.FC<GraphProps> = (props: GraphProps) => {
             />
           </XYChart>
         </Grid>
+        <Typography
+          variant="h6"
+          style={{ width: "100%", textAlign: "start", padding: "0 20px" }}
+        >
+          {title} {getText("uptime.response_time")}
+          <span style={{ float: "right" }}>
+            {secondGraph[secondGraph.length - 1].y}ms
+          </span>
+        </Typography>
         <Grid item xs={12}>
           <XYChart
             height={180}
