@@ -1,6 +1,9 @@
 # TON Monitor
 Service for monitoring TON Network status.
 
+
+## Architecture
+
 The service consists of 5 parts:
 * **Full TON node.** It collects following TON network statistics using MyTonCtrl wrapper: 
     * Blocks, 
@@ -21,16 +24,19 @@ Each part is represented by Docker container.
 ![Architecture](architecture.jpg)
 
 
+## Deploy with Docker Compose
+Just run `docker-compose up -d --build`. On updates run `docker-compose build <service> && docker-compose up -d <service>`.
 
-
-## Manual
+## Manual run
 ### Running Celery
 1. Set `export PYTHONPATH=/usr/src/mytonctrl`.
 2. Run `celery -A backend.background.celery worker --loglevel="INFO"`.
 
-## Running Flask
+### Running Flask
 1. Set `export PYTHONPATH=/usr/src/mytonctrl`.
 2. Run `./run_web_server.py`.
 
-## Running MongoDB and RabbitMQ
-1. Run `sudo docker-compose up -d --build --force-recreate`.
+### Running MongoDB and RabbitMQ
+Best practice is to run them from docker-compose. It will correctly mount data volumes and bind ports.
+1. Run `sudo docker-compose up -d mongodb`.
+2. Run `sudo docker-compose up -d rabbitmq`.

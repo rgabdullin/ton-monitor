@@ -19,6 +19,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # database
 database = get_database(MONGO_DATABASE)
+logger.info(f"Using '{database}' database")
 
 
 @app.route("/api/getGovernance")
@@ -49,6 +50,19 @@ def get_validators():
     result = list(database.validators.find({}))
     for r in result:
         r.pop('_id')
+    return jsonify(result)
+
+
+@app.route("/api/getValidatorCounts")
+def get_validator_counts():
+    val_list = list(database.validators.find({}))
+    online = 0
+    total = len(val_list)
+    for r in val_list:
+        if r is not None and r.get('online', False):
+            online += 1
+
+    result = {'online': online, 'total': total}
     return jsonify(result)
 
 
@@ -90,6 +104,8 @@ def get_ton_bridge_stats(hours=24):
                 ts = {key: list(loc[key]) for key in loc.columns}
                 res = dict(name=name, url=url, **ts)
                 results.append(res)
+                if 'timestamp' in res:
+                    res['timestamp'] = [x.timestamp() for x in res['timestamp']]
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
@@ -117,6 +133,8 @@ def get_ton_apis_stats(hours=24):
                 loc = loc.drop(columns=['service_name'])
                 ts = {key: list(loc[key]) for key in loc.columns}
                 res = dict(service_name=service_name, **ts)
+                if 'timestamp' in res:
+                    res['timestamp'] = [x.timestamp() for x in res['timestamp']]
                 results.append(res)
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
@@ -187,6 +205,7 @@ def get_last_block(minutes=2):
     start = datetime.utcnow() - timedelta(minutes=minutes)
     start = ObjectId.from_datetime(start)
     
+    shards = -1
     try:
         sync = database.validator_status.find_one({})
         sync = (sync["outOfSync"] + (datetime.now() - sync['timestamp']).total_seconds()) if sync is not None else 1e9
@@ -198,15 +217,25 @@ def get_last_block(minutes=2):
             res = res.sort("timestamp", -1).limit(1)
             res = list(res)
             if len(res) > 0 and sync <= 60:
+                shards = res[0].get('shards', 1)
                 res = res[0]['block_number']
             else:
                 res = "-1"
             last_blocks[workchain_id] = res
+            if workchain_id == '-1':
+                last_blocks['shards'] = shards
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
         logger.error(f"{traceback.format_exc()}")
-        last_blocks = {'-1': '-1', '0': '-1'}
+        last_blocks = {'-1': '-1', '0': '-1', 'shards': shards}
+
+    # patch
+    last_blocks = {
+        'masterchain': last_blocks.get('-1', '-1'),
+        'basechain': last_blocks.get('0', '-1'),
+        'shards': last_blocks.get('shards', '-1')
+    }
     return jsonify(last_blocks)
 
 
@@ -244,13 +273,14 @@ def get_transaction_stats(hours=24):
 
 @app.route("/")
 def index():
-    return jsonify(['/api/getGovernance',
-                    '/api/getLiteServers',
-                    '/api/getValidators',
-                    '/api/getLocalValidatorStatus',
-                    '/api/getTonApisStats',
-                    '/api/getTonBridgeStats',
-                    '/api/getBlockRate',
-                    '/api/getTps',
-                    '/api/getLastBlock',
-                    '/api/getTransactionStats',])
+    return jsonify(["/api/getGovernance",
+                    "/api/getLiteServers",
+                    "/api/getValidators",
+                    "/api/getValidatorCounts",
+                    "/api/getLocalValidatorStatus",
+                    "/api/getTonBridgeStats",
+                    "/api/getTonApisStats",
+                    "/api/getBlockRate",
+                    "/api/getTps",
+                    "/api/getLastBlock",
+                    "/api/getTransactionStats"])

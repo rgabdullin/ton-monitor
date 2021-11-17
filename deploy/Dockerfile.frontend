@@ -1,0 +1,23 @@
+FROM node:12-buster
+
+# setup locale and timezone
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8 
+
+# check npm
+RUN npm --version
+RUN yarn --version
+
+# install deps
+COPY frontend/package.json frontend/yarn.lock /usr/src/app/
+WORKDIR /usr/src/app
+RUN yarn install --frozen-lockfile
+
+# copy app
+ADD frontend/ /usr/src/app/
+
+ENTRYPOINT ["/bin/bash"]
