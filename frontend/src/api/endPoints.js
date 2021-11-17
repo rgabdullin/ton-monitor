@@ -1,13 +1,37 @@
-const getNetworkStats = {
-  name: "networkStats",
+const getValidators = {
+  name: "validators",
   method: "get",
-  url: "getNetworkStats",
+  url: "getValidators",
 };
 
-const getTonBridges = {
-  name: "tonBridges",
+const getLocalValidatorStatus = {
+  name: "localValidatorStatus",
   method: "get",
-  url: "getTonBridges",
+  url: "getLocalValidatorStatus",
+};
+
+const getTps = {
+  name: "tps",
+  method: "get",
+  url: "getTps",
+};
+
+const getLastBlock = {
+  name: "lastBlock",
+  method: "get",
+  url: "getLastBlock",
+};
+
+const getTransactionStats = {
+  name: "transactionStats",
+  method: "get",
+  url: "getTransactionStats",
+};
+
+const getTonBridgeStats = {
+  name: "tonBridgeStats",
+  method: "get",
+  url: "getTonBridgeStats",
 };
 
 const getGovernance = {
@@ -22,21 +46,39 @@ const getLiteServers = {
   url: "getLiteServers",
 };
 
-const getTonApis = {
-  name: "tonApis",
+const getTonApisStats = {
+  name: "tonApisStats",
   method: "get",
-  url: "getTonApis",
+  url: "getTonApisStats",
+};
+
+const getBlockRate = {
+  name: "blockRate",
+  method: "get",
+  url: "getBlockRate",
+};
+
+const getValidatorCounts = {
+  name: "validatorCounts",
+  method: "get",
+  url: "getValidatorCounts",
 };
 
 const exported = {
   name: "get",
   url: "/api/",
   children: [
-    getNetworkStats,
-    getTonBridges,
+    getValidators,
+    getLocalValidatorStatus,
+    getTransactionStats,
+    getLastBlock,
+    getTps,
+    getTonBridgeStats,
     getLiteServers,
-    getTonApis,
+    getTonApisStats,
     getGovernance,
+    getBlockRate,
+    getValidatorCounts,
   ],
 };
 

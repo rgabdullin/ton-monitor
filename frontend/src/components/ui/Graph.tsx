@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  AnimatedAxis, // any of these can be non-animated equivalents
-  AnimatedGrid,
-  AnimatedLineSeries,
-  XYChart,
-  AreaSeries,
-  Tooltip,
-} from "@visx/xychart";
+import { AnimatedAxis, XYChart, AreaSeries, Tooltip } from "@visx/xychart";
 import { LinearGradient } from "@visx/gradient";
-import { ThemeConfig } from "@visx/xychart/lib/theme/buildChartTheme";
 import { curveMonotoneX } from "@visx/curve";
 
 import { Divider, Grid, Typography } from "@mui/material";
 import { GraphProps } from "../types";
-import { getText } from "../helpers";
+import { getText, getRoundValue } from "../helpers";
 
 const Graph: React.FC<GraphProps> = (props: GraphProps) => {
   const { firstGraph, secondGraph, accessors, title } = props;
@@ -27,14 +19,14 @@ const Graph: React.FC<GraphProps> = (props: GraphProps) => {
         >
           {title} {getText("uptime.uptime")}
           <span style={{ float: "right" }}>
-            {firstGraph[firstGraph.length - 1].y}%
+            {getRoundValue(firstGraph[firstGraph.length - 1].y)}%
           </span>
         </Typography>
         <Grid item xs={12}>
           <XYChart
             height={180}
-            xScale={{ type: "band" }}
-            yScale={{ type: "radial" }}
+            xScale={{ type: "band", paddingInner: 0.9 }}
+            yScale={{ type: "linear" }}
           >
             <LinearGradient
               id="area-gradient"
@@ -78,7 +70,7 @@ const Graph: React.FC<GraphProps> = (props: GraphProps) => {
         >
           {title} {getText("uptime.response_time")}
           <span style={{ float: "right" }}>
-            {secondGraph[secondGraph.length - 1].y}ms
+            {getRoundValue(secondGraph[secondGraph.length - 1].y)}ms
           </span>
         </Typography>
         <Grid item xs={12}>

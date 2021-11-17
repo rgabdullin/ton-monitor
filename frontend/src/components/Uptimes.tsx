@@ -1,8 +1,7 @@
 import { Grid } from "@mui/material";
 import React from "react";
 
-import { getTonApis } from "../api/Api";
-import { mockUptime } from "./helpers";
+import { getTonApisStats } from "../api/Api";
 import InfoBlockItem from "./InfoBlock/InfoBlockItem";
 import { Point, UptimesDataType, GraphProps } from "./types";
 import Graph from "./ui/Graph";
@@ -15,16 +14,11 @@ const accessors = {
 const Uptimes: React.FC = (...props) => {
   const [uptime, setUptime] = React.useState<UptimesDataType[]>([]);
   let graphData: GraphProps[] = [];
-  React.useEffect(() => {
-    // getTonApis().then((data) => setUptime(data));
-    setUptime(mockUptime);
-  }, []);
   const getApisData = () => {
-    setUptime(mockUptime);
     console.log("%cmockData updated ", "color: #008000");
-    // getTonApis()
-    //   .then((data) => setUptime(data))
-    //   .then(() => console.log("%cgetTonApis called ", "color: #008000"));
+    getTonApisStats()
+      .then((data) => setUptime(data))
+      .then(() => console.log("%cgetTonApisStats called ", "color: #008000"));
   };
   React.useEffect(() => {
     getApisData();
@@ -36,24 +30,24 @@ const Uptimes: React.FC = (...props) => {
     };
   }, []);
   uptime.length &&
-    uptime.forEach((element, index) => {
-      const { host, uptimes, timestamps, response_times } = element;
+    uptime.forEach((element) => {
+      const { service_name, available, timestamp, response_time } = element;
       let firstData: Point[] = [];
       let secondData: Point[] = [];
-      if (uptimes && uptimes.length)
-        for (let i = 0; i < uptimes.length; i++) {
-          var date = new Date(timestamps[i] * 1000);
+      if (available && available.length)
+        for (let i = 0; i < available.length; i++) {
+          const date = new Date(timestamp[i] * 1000);
           firstData[i] = {
             x: date.toLocaleTimeString(),
-            y: uptimes[i] * 100,
+            y: available[i] * 100,
           };
           secondData[i] = {
             x: date.toLocaleTimeString(),
-            y: response_times[i],
+            y: response_time[i],
           };
         }
       graphData.push({
-        title: host,
+        title: service_name,
         firstGraph: firstData,
         secondGraph: secondData,
         accessors: accessors,
