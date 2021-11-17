@@ -1,12 +1,17 @@
 import api from './ApiTools';
 
-export const getTPS = async() => {
-    const { response } = await api.get.TPS();
+export const getNetworkStats = async() => {
+    const { response } = await api.get.networkStats();
     return response;
 }
 
-export const getUptime = async() => {
-    const { response } = await api.get.uptime();
+export const getTonApis = async() => {
+    const { response } = await api.get.tonApis();
+    return response;
+}
+
+export const getTonBridges = async() => {
+    const { response } = await api.get.tonBridges();
     return response;
 }
 
@@ -15,8 +20,8 @@ export const getGovernance = async() => {
     return response;
 }
 
-export const getLiteservers = async() => {
-    const { response } = await api.get.liteservers();
+export const getLiteServers = async() => {
+    const { response } = await api.get.liteServers();
     return response;
 }
 

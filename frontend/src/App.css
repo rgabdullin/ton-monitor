@@ -1,6 +1,17 @@
 #root {
   padding-top: 30px;
   max-width: 1440px;
-  margin: 64px auto 0;
+  margin: 0 auto;
+}
+#root .MuiTypography-root {
+  font-family: "Mulish";
+  font-style: normal;
 }
 
+body {
+  overflow-y: scroll;
+}
+
+.main > .MuiGrid-container {
+  margin-bottom: 40px;
+}
